@@ -1,6 +1,6 @@
 import { Clipboard, open, showHUD } from "@raycast/api";
 import { execFile } from "node:child_process";
-import { findAppleMusicUrl as resolveAppleMusicUrl, type SpotifyTrack } from "./apple-music";
+import { findAppleMusicUrl, type SpotifyTrack } from "./apple-music";
 
 const SEPARATOR = "\u001f";
 
@@ -8,10 +8,10 @@ export default async function command() {
   try {
     const track = await getCurrentSpotifyTrack();
     await Clipboard.copy(track.uri);
-    await open(await findAppleMusicUrl(track), "Music");
+    await open(await findAppleMusicUrl(track, getCountryCode()), "Music");
     await showHUD("Opened in Apple Music");
   } catch (error) {
-    await showHUD(getErrorMessage(error));
+    await showHUD(error instanceof Error && error.message.trim() ? error.message.trim() : "Something went wrong.");
   }
 }
 
@@ -35,16 +35,6 @@ async function getCurrentSpotifyTrack(): Promise<SpotifyTrack> {
   return { uri, name, artist };
 }
 
-async function findAppleMusicUrl(track: SpotifyTrack): Promise<string> {
-  const country = getCountryCode();
-  return resolveAppleMusicUrl(track, { country });
-}
-
-function getCountryCode(): string {
-  const locale = Intl.DateTimeFormat().resolvedOptions().locale || process.env.LANG || "";
-  return locale.match(/[-_]([a-zA-Z]{2})/)?.[1]?.toUpperCase() ?? "US";
-}
-
 async function runAppleScript(script: string): Promise<string> {
   return await new Promise((resolve, reject) => {
     execFile("/usr/bin/osascript", ["-e", script], (error, stdout, stderr) => {
@@ -58,10 +48,7 @@ async function runAppleScript(script: string): Promise<string> {
   });
 }
 
-function getErrorMessage(error: unknown): string {
-  if (error instanceof Error && error.message.trim()) {
-    return error.message.trim();
-  }
-
-  return "Something went wrong.";
+function getCountryCode(): string {
+  const locale = Intl.DateTimeFormat().resolvedOptions().locale || process.env.LANG || "";
+  return locale.match(/[-_]([a-zA-Z]{2})/)?.[1]?.toUpperCase() ?? "US";
 }
