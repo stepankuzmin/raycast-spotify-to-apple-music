@@ -28,20 +28,31 @@ export async function findAppleMusicUrl(
       country,
     });
 
-    const response = await fetchFn(`https://itunes.apple.com/search?${params.toString()}`);
+    const response = await fetchFn(
+      `https://itunes.apple.com/search?${params.toString()}`,
+    );
     if (!response.ok) {
-      throw new Error(`Apple Music search failed with status ${response.status}.`);
+      throw new Error(
+        `Apple Music search failed with status ${response.status}.`,
+      );
     }
 
     const payload = (await response.json()) as AppleMusicSearchResponse;
-    const exactishMatch = payload.results?.find((song) => isSameSong(track, song));
-    return exactishMatch?.trackViewUrl ?? buildAppleMusicSearchUrl(track, country);
+    const exactishMatch = payload.results?.find((song) =>
+      isSameSong(track, song),
+    );
+    return (
+      exactishMatch?.trackViewUrl ?? buildAppleMusicSearchUrl(track, country)
+    );
   } catch {
     return buildAppleMusicSearchUrl(track, country);
   }
 }
 
-export function buildAppleMusicSearchUrl(track: SpotifyTrack, country: string): string {
+export function buildAppleMusicSearchUrl(
+  track: SpotifyTrack,
+  country: string,
+): string {
   const params = new URLSearchParams({
     term: `${track.artist} ${track.name}`,
   });
@@ -55,7 +66,12 @@ function isSameSong(track: SpotifyTrack, song: AppleMusicSong): boolean {
   const trackArtist = normalizeText(track.artist);
   const songArtist = normalizeText(song.artistName ?? "");
 
-  return trackTitle === songTitle && (trackArtist === songArtist || trackArtist.includes(songArtist) || songArtist.includes(trackArtist));
+  return (
+    trackTitle === songTitle &&
+    (trackArtist === songArtist ||
+      trackArtist.includes(songArtist) ||
+      songArtist.includes(trackArtist))
+  );
 }
 
 function normalizeTitle(value: string): string {

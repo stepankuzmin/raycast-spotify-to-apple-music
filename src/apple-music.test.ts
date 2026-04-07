@@ -34,7 +34,11 @@ describe("findAppleMusicUrl", () => {
       artist: "Artist",
     };
 
-    const url = await findAppleMusicUrl(track, "US", vi.fn().mockRejectedValue(new Error("boom")) as typeof fetch);
+    const url = await findAppleMusicUrl(
+      track,
+      "US",
+      vi.fn().mockRejectedValue(new Error("boom")) as typeof fetch,
+    );
 
     expect(url).toBe(buildAppleMusicSearchUrl(track, "US"));
   });

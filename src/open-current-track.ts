@@ -11,7 +11,11 @@ export default async function command() {
     await open(await findAppleMusicUrl(track, getCountryCode()), "Music");
     await showHUD("Opened in Apple Music");
   } catch (error) {
-    await showHUD(error instanceof Error && error.message.trim() ? error.message.trim() : "Something went wrong.");
+    await showHUD(
+      error instanceof Error && error.message.trim()
+        ? error.message.trim()
+        : "Something went wrong.",
+    );
   }
 }
 
@@ -26,7 +30,9 @@ async function getCurrentSpotifyTrack(): Promise<SpotifyTrack> {
     end tell
   `);
 
-  const [uri = "", name = "", artist = ""] = output.split(SEPARATOR).map((value) => value.trim());
+  const [uri = "", name = "", artist = ""] = output
+    .split(SEPARATOR)
+    .map((value) => value.trim());
 
   if (!uri || !name || !artist) {
     throw new Error("Spotify didn't return enough track details.");
@@ -49,6 +55,7 @@ async function runAppleScript(script: string): Promise<string> {
 }
 
 function getCountryCode(): string {
-  const locale = Intl.DateTimeFormat().resolvedOptions().locale || process.env.LANG || "";
+  const locale =
+    Intl.DateTimeFormat().resolvedOptions().locale || process.env.LANG || "";
   return locale.match(/[-_]([a-zA-Z]{2})/)?.[1]?.toUpperCase() ?? "US";
 }
