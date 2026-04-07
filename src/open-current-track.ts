@@ -1,19 +1,8 @@
 import { Clipboard, open, showHUD } from "@raycast/api";
 import { execFile } from "node:child_process";
+import { findAppleMusicUrl as resolveAppleMusicUrl, type SpotifyTrack } from "./apple-music";
 
 const SEPARATOR = "\u001f";
-
-type SpotifyTrack = {
-  uri: string;
-  name: string;
-  artist: string;
-};
-
-type AppleMusicSong = {
-  trackName?: string;
-  artistName?: string;
-  trackViewUrl?: string;
-};
 
 export default async function command() {
   try {
@@ -48,61 +37,7 @@ async function getCurrentSpotifyTrack(): Promise<SpotifyTrack> {
 
 async function findAppleMusicUrl(track: SpotifyTrack): Promise<string> {
   const country = getCountryCode();
-  try {
-    const params = new URLSearchParams({
-      term: `${track.artist} ${track.name}`,
-      media: "music",
-      entity: "song",
-      limit: "5",
-      country,
-    });
-
-    const response = await fetch(`https://itunes.apple.com/search?${params.toString()}`);
-    if (!response.ok) {
-      throw new Error(`Apple Music search failed with status ${response.status}.`);
-    }
-
-    const payload = (await response.json()) as { results?: AppleMusicSong[] };
-    const exactishMatch = payload.results?.find((song) => isSameSong(track, song));
-    return exactishMatch?.trackViewUrl ?? buildAppleMusicSearchUrl(track, country);
-  } catch {
-    return buildAppleMusicSearchUrl(track, country);
-  }
-}
-
-function isSameSong(track: SpotifyTrack, song: AppleMusicSong): boolean {
-  const trackTitle = normalizeTitle(track.name);
-  const songTitle = normalizeTitle(song.trackName ?? "");
-  const trackArtist = normalizeText(track.artist);
-  const songArtist = normalizeText(song.artistName ?? "");
-
-  return trackTitle === songTitle && (trackArtist === songArtist || trackArtist.includes(songArtist) || songArtist.includes(trackArtist));
-}
-
-function buildAppleMusicSearchUrl(track: SpotifyTrack, country = getCountryCode()): string {
-  const params = new URLSearchParams({
-    term: `${track.artist} ${track.name}`,
-  });
-
-  return `https://music.apple.com/${country.toLowerCase()}/search?${params.toString()}`;
-}
-
-function normalizeTitle(value: string): string {
-  return normalizeText(
-    value
-      .replace(/\((.*?)\)/g, " ")
-      .replace(/\[(.*?)\]/g, " ")
-      .replace(/\b(feat\.?|featuring)\b.*$/i, " "),
-  );
-}
-
-function normalizeText(value: string): string {
-  return value
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-zA-Z0-9]+/g, " ")
-    .trim()
-    .toLowerCase();
+  return resolveAppleMusicUrl(track, { country });
 }
 
 function getCountryCode(): string {

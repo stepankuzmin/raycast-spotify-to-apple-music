@@ -13,6 +13,11 @@ This is a tiny local Raycast extension with one command:
 2. Start Raycast development with `npm run dev`.
 3. Run `Spotify to Apple Music` from Raycast.
 
+## CI checks
+
+- Run `npm run build:ci` to validate the extension in CI without writing to Raycast's local extensions directory.
+- Run `npm test` to execute the small unit test suite for the Apple Music matching logic.
+
 ## Notes
 
 - The first run may trigger macOS automation prompts for Spotify and Music.
