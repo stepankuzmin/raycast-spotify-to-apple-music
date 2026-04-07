@@ -1,0 +1,42 @@
+{
+  "name": "spotify-to-apple-music",
+  "title": "Spotify to Apple Music",
+  "description": "Copy the current Spotify track URI and open the matching song in Apple Music.",
+  "icon": "assets/icon.png",
+  "author": "stepan",
+  "license": "MIT",
+  "categories": [
+    "Music"
+  ],
+  "platforms": [
+    "macOS"
+  ],
+  "commands": [
+    {
+      "name": "open-current-track",
+      "title": "Spotify to Apple Music",
+      "subtitle": "Spotify",
+      "description": "Copy the current Spotify track URI and open the matching song in Apple Music.",
+      "mode": "no-view",
+      "keywords": [
+        "spotify",
+        "apple music",
+        "music",
+        "song",
+        "track",
+        "uri"
+      ]
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "build": "ray build",
+    "dev": "ray develop"
+  }
+}
