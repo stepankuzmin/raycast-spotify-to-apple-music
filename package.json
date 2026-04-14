@@ -16,10 +16,10 @@
     "Productivity"
   ],
   "commands": [
-      {
-        "name": "open-current-track",
-        "title": "Spotify to Apple Music",
-        "subtitle": "Spotify",
+    {
+      "name": "open-current-track",
+      "title": "Open Current Song in Apple Music",
+      "subtitle": "Spotify",
         "description": "Copy the current Spotify track URI and open the matching song in Apple Music.",
         "icon": "icon.png",
         "mode": "no-view",
