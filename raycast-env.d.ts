@@ -14,7 +14,10 @@ declare type Preferences = ExtensionPreferences
 
 declare namespace Preferences {
   /** Preferences accessible in the `open-current-track` command */
-  export type OpenCurrentTrack = ExtensionPreferences & {}
+  export type OpenCurrentTrack = ExtensionPreferences & {
+  /** Apple Music Storefront Country - Two-letter Apple Music storefront country code used for search and open links. */
+  "countryCode": string
+}
 }
 
 declare namespace Arguments {
