@@ -8,8 +8,7 @@
   "icon": "icon.png",
   "type": "module",
   "platforms": [
-    "macOS",
-    "Windows"
+    "macOS"
   ],
   "categories": [
     "Media",
